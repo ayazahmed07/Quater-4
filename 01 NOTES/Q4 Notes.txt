@@ -1,0 +1,57 @@
+Front End 
+	UI Framework required Language (Javascript) / Farmework(Next JS / Streamlit) / Library - NodeJs Run Time Environment
+
+BackEnd Business Logic / Data base runs on server
+	 - required Language (Python) / Farmework(Fast API /Flask / Django) / Library
+
+Database - 
+	Postgresss Sql (Cloud Version Neon DB) - Types of database Why using postgress Sql??
+
+Put and Patch Method difference
+
+Object Relational Mapping - SQLalchemy => orm (if dont know raw querry) - SQLModel Wrapper {Combination of pydantic and sqlalchemy)
+
+1) Data base url get
+2) Now Create Engine
+3) inherit class in SQLMODEL
+4) SQLModel.metadata.create_all(engine)
+5) To put data in database we need to create a session
+6) letancy time consuming thats why we use backend for database processing
+
+Pydantic to make a validation that wrong data type will not store in database
+to use postgress we have to know about query language of postgress to avoid this we use ORM its secure
+why we use orm for securifty SQL Injection
+we use orm to make objects
+
+class pydanitc for validation 
+other sql alchemy make database tables - 
+we use sql model library its a combination of sqlalchemy and pydantic (by using this we only need to make a single class)
+
+dependency injection - Creation phase and close phase
+
+
+
+User = Consumer Primary 
+User = Admin (Secondry)
+User = Third Application (Payment, Shipment, Provider)
+
+Strong Business Boundries
+http - stateless
+
+Application Architecture
+for Small App Monolithic Architechure
+for Large Apps we make seprate backend makes mirco services - like if 1 service is down another will run
+need to manage micro services through orchisterator (Kubernetess, Kafka)
+i have a software i made a docker package named: Docker Image - to make a docker image we need app code / dependencies / docker file this is called a blueprint - to run that image it is called 
+docker container - a pakcakge which runs on all systems
+
+DOCKER
+make an image of your code and then container from image (to run python we need python image)
+<image name>:<tag>/latest (by default tag)
+docker pull python:3.10.19-trixie
+
+
+
+
+
+
