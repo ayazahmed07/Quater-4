@@ -50,6 +50,9 @@ make an image of your code and then container from image (to run python we need 
 <image name>:<tag>/latest (by default tag)
 docker pull python:3.10.19-trixie
 
+WORKDIR /app
+COPY main.py # copy on workdir its a root directory
+
 
 
 
