@@ -174,11 +174,11 @@ export const Products: React.FC = () => {
                 <td>{product.name}</td>
                 <td>{product.type}</td>
                 <td>{product.fuel_type || '-'}</td>
-                <td>${product.current_price.toFixed(2)}</td>
+                <td>Rs. ${Number(product.current_price).toFixed(2)}</td>
                 <td>{product.quantity ? `${product.quantity} L` : '-'}</td>
                 <td>
                   <button
-                    onClick={() => { setSelectedProductId(product.id); setShowPriceForm(true); setPriceData({ new_price: product.current_price }); }}
+                    onClick={() => { setSelectedProductId(product.id); setShowPriceForm(true); setPriceData({ new_price: Number(product.current_price) }); }}
                     className="btn-small"
                   >
                     Update Price

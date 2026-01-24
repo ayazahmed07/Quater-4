@@ -60,9 +60,9 @@ export const CustomerInvoices: React.FC = () => {
                 <td>
                   {new Date(invoice.billing_period_start).toLocaleDateString()} - {new Date(invoice.billing_period_end).toLocaleDateString()}
                 </td>
-                <td>${invoice.total_amount.toFixed(2)}</td>
-                <td>${invoice.paid_amount.toFixed(2)}</td>
-                <td>${invoice.balance_due.toFixed(2)}</td>
+                <td>Rs. ${Number(invoice.total_amount).toFixed(2)}</td>
+                <td>Rs. ${Number(invoice.paid_amount).toFixed(2)}</td>
+                <td>Rs. ${Number(invoice.balance_due).toFixed(2)}</td>
                 <td>
                   <span style={{ color: getStatusColor(invoice.status), fontWeight: 'bold' }}>
                     {invoice.status}

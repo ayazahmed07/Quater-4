@@ -122,13 +122,13 @@ export const MeterReadings: React.FC = () => {
               <tr key={reading.id}>
                 <td>{reading.id}</td>
                 <td>{reading.product_name}</td>
-                <td>{reading.opening_reading.toFixed(2)}</td>
-                <td>{reading.closing_reading ? reading.closing_reading.toFixed(2) : 'Open'}</td>
+                <td>{Number(reading.opening_reading).toFixed(2)}</td>
+                <td>{reading.closing_reading ? Number(reading.closing_reading).toFixed(2) : 'Open'}</td>
                 <td>{new Date(reading.date).toLocaleString()}</td>
                 <td>
                   {!reading.closing_reading && (
                     <button
-                      onClick={() => handleClose(reading.id, reading.opening_reading)}
+                      onClick={() => handleClose(reading.id, Number(reading.opening_reading))}
                       className="btn-small"
                     >
                       Close

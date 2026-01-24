@@ -31,10 +31,13 @@ export const NewTransaction: React.FC = () => {
         adminApi.getProducts(),
         adminApi.getCustomers(),
       ]);
-      setProducts(productsData);
-      setCustomers(customersData);
-    } catch (error) {
+      setProducts(productsData || []);
+      setCustomers(customersData || []);
+    } catch (error: any) {
       console.error('Failed to load data:', error);
+      alert('Failed to load data. Please try again.');
+      setProducts([]);
+      setCustomers([]);
     } finally {
       setIsLoading(false);
     }
@@ -63,7 +66,7 @@ export const NewTransaction: React.FC = () => {
     try {
       await cashierApi.createTransaction(payload);
       alert('Transaction created successfully!');
-      navigate('/cashier/transactions');
+      navigate('/dashboard');
     } catch (error: any) {
       alert(error.response?.data?.detail || 'Failed to create transaction');
     }
@@ -71,7 +74,7 @@ export const NewTransaction: React.FC = () => {
 
   const calculateAmount = () => {
     if (mode === TransactionMode.LITER_BASED && selectedProduct) {
-      return formData.quantity * selectedProduct.current_price;
+      return formData.quantity * Number(selectedProduct.current_price);
     }
     return formData.amount;
   };
@@ -116,7 +119,7 @@ export const NewTransaction: React.FC = () => {
                 <option value="">Select Product</option>
                 {products.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {p.name} - ${p.current_price.toFixed(2)}/L
+                    {p.name} - Rs. {Number(p.current_price || 0).toFixed(2)}/L
                   </option>
                 ))}
               </select>
@@ -151,12 +154,12 @@ export const NewTransaction: React.FC = () => {
                   required
                 />
                 {selectedProduct && (
-                  <small>Estimated: ${calculateAmount().toFixed(2)}</small>
+                  <small>Estimated: Rs. {Number(calculateAmount() || 0).toFixed(2)}</small>
                 )}
               </div>
             ) : (
               <div className="form-group">
-                <label>Amount ($)</label>
+                <label>Amount (Rs.)</label>
                 <input
                   type="number"
                   step="0.01"
@@ -164,8 +167,8 @@ export const NewTransaction: React.FC = () => {
                   onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) })}
                   required
                 />
-                {selectedProduct && (
-                  <small>Estimated: {(formData.amount / selectedProduct.current_price).toFixed(2)} L</small>
+                {selectedProduct && Number(selectedProduct.current_price) > 0 && (
+                  <small>Estimated: {(formData.amount / Number(selectedProduct.current_price)).toFixed(2)} L</small>
                 )}
               </div>
             )}

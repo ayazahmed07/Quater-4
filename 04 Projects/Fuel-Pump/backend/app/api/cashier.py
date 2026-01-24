@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from datetime import datetime
@@ -183,8 +183,8 @@ async def create_meter_reading(
 @router.put("/meter-readings/{reading_id}/close", response_model=MeterReadingResponse)
 async def close_meter_reading(
     reading_id: int,
-    closing_reading: Decimal,
     current_user: CurrentUser,
+    closing_reading: Decimal = Query(..., description="Closing meter reading value"),
     db: AsyncSession = Depends(get_db),
 ):
     result = await db.execute(select(MeterReading).where(MeterReading.id == reading_id))

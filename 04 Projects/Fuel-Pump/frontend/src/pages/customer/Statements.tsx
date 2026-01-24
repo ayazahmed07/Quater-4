@@ -48,9 +48,9 @@ export const Statements: React.FC = () => {
               <tr key={t.id}>
                 <td>{new Date(t.transaction_date).toLocaleString()}</td>
                 <td>{t.product_name}</td>
-                <td>{t.quantity.toFixed(2)} L</td>
-                <td>${t.unit_price.toFixed(2)}</td>
-                <td>${t.total_amount.toFixed(2)}</td>
+                <td>{Number(t.quantity).toFixed(2)} L</td>
+                <td>Rs. ${Number(t.unit_price).toFixed(2)}</td>
+                <td>Rs. ${Number(t.total_amount).toFixed(2)}</td>
                 <td>{t.payment_type}</td>
               </tr>
             ))}

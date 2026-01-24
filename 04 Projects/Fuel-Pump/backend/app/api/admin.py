@@ -5,18 +5,18 @@ from typing import Optional
 from datetime import datetime
 from decimal import Decimal
 from app.database import get_db
-from app.api.deps import CurrentUser, RequireAdmin
+from app.api.deps import CurrentUser, RequireAdmin, RequireCashier
 from app.schemas.user import UserCreate, UserResponse, UserUpdate
 from app.schemas.customer import CustomerCreate, CustomerResponse, CustomerWithUser, CustomerUpdate
 from app.schemas.product import ProductCreate, ProductResponse, ProductWithInventory, ProductUpdate, PriceUpdate, PriceHistoryResponse
 from app.schemas.transaction import FuelingTransactionResponse, FuelingTransactionWithDetails, TransactionConfirm, TransactionReject
-from app.schemas.invoice import InvoiceWithDetails
+from app.schemas.invoice import InvoiceWithDetails, InvoiceResponse
 from app.models.user import User
-from app.models.customer import Customer
+from app.models.customer import Customer, CustomerStatus
 from app.models.product import Product, PriceHistory
 from app.models.inventory import Inventory
-from app.models.transaction import FuelingTransaction, TransactionStatus
-from app.models.invoice import Invoice, InvoiceStatus
+from app.models.transaction import FuelingTransaction, TransactionStatus, PaymentType
+from app.models.invoice import Invoice, InvoiceItem, InvoiceStatus
 from app.core.security import get_password_hash
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
@@ -80,7 +80,7 @@ async def update_user(
 # ==================== Customer Management ====================
 @router.get("/customers", response_model=list[CustomerWithUser])
 async def list_customers(
-    current_user: RequireAdmin,
+    current_user: RequireCashier,  # Changed from RequireAdmin to allow cashiers
     db: AsyncSession = Depends(get_db),
 ):
     result = await db.execute(
@@ -156,7 +156,7 @@ async def update_customer(
 # ==================== Product Management ====================
 @router.get("/products", response_model=list[ProductWithInventory])
 async def list_products(
-    current_user: RequireAdmin,
+    current_user: RequireCashier,  # Changed from RequireAdmin to allow cashiers
     db: AsyncSession = Depends(get_db),
 ):
     result = await db.execute(
@@ -341,8 +341,9 @@ async def list_invoices(
     rows = result.all()
     return [
         InvoiceWithDetails(
-            **InvoiceWithDetails.model_validate(i).model_dump(),
+            **InvoiceResponse.model_validate(i).model_dump(),
             customer_name=c.name,
+            items=[]  # Items not loaded in list view for performance
         )
         for i, c in rows
     ]
@@ -353,6 +354,87 @@ async def generate_invoices(
     current_user: RequireAdmin,
     db: AsyncSession = Depends(get_db),
 ):
-    # This will be implemented in the billing service
-    # For now, return a placeholder
-    return {"message": "Invoice generation will be implemented in billing service"}
+    """Generate invoices for all customers with posted credit transactions"""
+    from datetime import timedelta
+    from decimal import Decimal
+
+    # Get all customers
+    customers_result = await db.execute(select(Customer).where(Customer.status == CustomerStatus.ACTIVE))
+    customers = customers_result.scalars().all()
+
+    invoices_created = 0
+
+    for customer in customers:
+        # Get all posted credit transactions for this customer that haven't been invoiced
+        transactions_result = await db.execute(
+            select(FuelingTransaction)
+            .where(
+                FuelingTransaction.customer_id == customer.id,
+                FuelingTransaction.status == TransactionStatus.POSTED,
+                FuelingTransaction.payment_type == PaymentType.CREDIT,
+                FuelingTransaction.credit_amount > 0
+            )
+            .order_by(FuelingTransaction.transaction_date)
+        )
+        transactions = transactions_result.scalars().all()
+
+        # Filter out transactions that are already part of an invoice
+        uninvoiced_transactions = []
+        for transaction in transactions:
+            # Check if this transaction is already in an invoice item
+            existing_item = await db.execute(
+                select(InvoiceItem).where(InvoiceItem.transaction_id == transaction.id)
+            )
+            if not existing_item.scalar_one_or_none():
+                uninvoiced_transactions.append(transaction)
+
+        if not uninvoiced_transactions:
+            continue
+
+        # Calculate total amount
+        total_amount = Decimal(str(sum(t.credit_amount for t in uninvoiced_transactions)))
+
+        # Generate invoice number
+        last_invoice = await db.execute(
+            select(Invoice).order_by(Invoice.id.desc()).limit(1)
+        )
+        last_inv = last_invoice.scalar_one_or_none()
+        invoice_number = f"INV-{(last_inv.id if last_inv else 0) + 1:06d}"
+
+        # Calculate billing period (last 30 days)
+        period_end = datetime.utcnow()
+        period_start = period_end - timedelta(days=30)
+
+        # Set due date (30 days from now)
+        due_date = period_end + timedelta(days=30)
+
+        # Create invoice
+        invoice = Invoice(
+            customer_id=customer.id,
+            invoice_number=invoice_number,
+            billing_period_start=period_start,
+            billing_period_end=period_end,
+            total_amount=total_amount,
+            paid_amount=Decimal("0"),
+            balance_due=total_amount,
+            status=InvoiceStatus.GENERATED,
+            due_date=due_date,
+        )
+        db.add(invoice)
+        await db.flush()
+
+        # Create invoice items
+        for transaction in uninvoiced_transactions:
+            item = InvoiceItem(
+                invoice_id=invoice.id,
+                transaction_id=transaction.id,
+                quantity=transaction.quantity,
+                unit_price=transaction.unit_price,
+                total_amount=transaction.credit_amount,
+            )
+            db.add(item)
+
+        invoices_created += 1
+
+    await db.commit()
+    return {"message": f"Successfully generated {invoices_created} invoices"}

@@ -53,7 +53,7 @@ export const Customers: React.FC = () => {
                 <td>{customer.name}</td>
                 <td>{customer.email || '-'}</td>
                 <td>{customer.phone}</td>
-                <td>${customer.credit_limit.toFixed(2)}</td>
+                <td>Rs. ${Number(customer.credit_limit).toFixed(2)}</td>
                 <td>{customer.status}</td>
               </tr>
             ))}

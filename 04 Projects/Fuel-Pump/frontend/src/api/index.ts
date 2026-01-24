@@ -127,7 +127,9 @@ export const cashierApi = {
   },
 
   closeMeterReading: async (readingId: number, closingReading: number): Promise<any> => {
-    const response = await api.put(`/cashier/meter-readings/${readingId}/close?closing_reading=${closingReading}`);
+    const response = await api.put(`/cashier/meter-readings/${readingId}/close`, null, {
+      params: { closing_reading: closingReading }
+    });
     return response.data;
   },
 

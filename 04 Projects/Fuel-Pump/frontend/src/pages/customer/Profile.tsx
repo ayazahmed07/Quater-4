@@ -92,7 +92,7 @@ export const Profile: React.FC = () => {
                 </div>
                 <div className="form-group">
                   <label>Credit Limit</label>
-                  <input type="text" value={`$${customer.credit_limit.toFixed(2)}`} disabled />
+                  <input type="text" value={`Rs. ${Number(customer.credit_limit).toFixed(2)}`} disabled />
                 </div>
                 <div className="form-actions">
                   <button type="submit" className="btn-primary">Save</button>
@@ -118,7 +118,7 @@ export const Profile: React.FC = () => {
               </div>
               <div className="profile-field">
                 <label>Credit Limit:</label>
-                <span>${customer.credit_limit.toFixed(2)}</span>
+                <span>Rs. ${Number(customer.credit_limit).toFixed(2)}</span>
               </div>
               <div className="profile-field">
                 <label>Status:</label>

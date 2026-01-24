@@ -78,8 +78,8 @@ export const Transactions: React.FC = () => {
                 <td>{t.id}</td>
                 <td>{t.product_name}</td>
                 <td>{t.customer_name || 'Cash Customer'}</td>
-                <td>{t.quantity.toFixed(2)} L</td>
-                <td>${t.total_amount.toFixed(2)}</td>
+                <td>{Number(t.quantity).toFixed(2)} L</td>
+                <td>Rs. ${Number(t.total_amount).toFixed(2)}</td>
                 <td>{t.payment_type}</td>
                 <td>{t.creator_name}</td>
                 <td>{new Date(t.transaction_date).toLocaleString()}</td>

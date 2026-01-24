@@ -55,6 +55,11 @@ COPY main.py # copy on workdir its a root directory
 docker build -t python-fs .
 docker exec -it Ayaz ls /app ## to see file
 
+-d to run on deatch mode by defult run on attached mode 
+
+assignment make fronend backend and link it with a network
+
+
 
 
 
