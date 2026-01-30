@@ -6,7 +6,8 @@
       "Bash(git pull:*)",
       "Bash(gh:*)",
       "Bash(winget install:*)",
-      "Bash(powershell.exe:*)"
+      "Bash(powershell.exe:*)",
+      "Bash(git push:*)"
     ]
   }
 }
