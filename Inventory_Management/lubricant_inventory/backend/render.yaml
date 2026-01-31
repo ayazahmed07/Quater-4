@@ -1,0 +1,21 @@
+services:
+  # Web Service (Backend API)
+  - type: web
+    name: lubricant-inventory-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: DATABASE_URL
+        fromDatabase:
+          name: lubricant-inventory-db
+          property: connectionString
+    healthCheckPath: /api/health
+
+databases:
+  # PostgreSQL Database
+  - name: lubricant-inventory-db
+    databaseName: lubricant_inventory
+    user: lubricant_user
