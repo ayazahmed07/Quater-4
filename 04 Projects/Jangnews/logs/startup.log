@@ -1,7 +1,0 @@
-[32m2026-03-31 09:42:48[0m | [1mINFO    [0m | [36mCreated new database file: storage/database.json[0m
-[32m2026-03-31 09:42:48[0m | [1mINFO    [0m | [36mCreated temporary PDF download directory: temp_pdfs[0m
-[32m2026-03-31 09:42:48[0m | [1mINFO    [0m | [36mPSX AI Agent started. Monitoring PSX announcements...[0m
-[32m2026-03-31 09:42:48[0m | [34m[1mDEBUG   [0m | [36mFetching PSX announcements from https://dps.psx.com.pk/announcements/all[0m
-[32m2026-03-31 09:42:49[0m | [31m[1mERROR   [0m | [36mFailed to fetch PSX announcements: 462 Client Error:  for url: https://dps.psx.com.pk/announcements/all[0m
-[32m2026-03-31 09:42:49[0m | [33m[1mWARNING [0m | [36mNo announcements found or failed to fetch. Retrying next cycle.[0m
-[32m2026-03-31 09:42:49[0m | [34m[1mDEBUG   [0m | [36mSleeping for 300 seconds...[0m
