@@ -4,7 +4,7 @@ from typing import Optional
 
 class Settings(BaseSettings):
     """
-    Configuration settings for the PSX AI Agent.
+    Configuration settings for the Jang News AI Agent.
     Values are automatically loaded from environment variables and .env file.
     """
     # Whapi.cloud API Configuration
@@ -18,7 +18,7 @@ class Settings(BaseSettings):
 
     # Storage and Logging
     database_file: str = "storage/database.json"
-    log_file: str = "logs/psx_agent.log"
+    log_file: str = "logs/jang_news_agent.log"
 
     # Tell pydantic to use the .env file
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")

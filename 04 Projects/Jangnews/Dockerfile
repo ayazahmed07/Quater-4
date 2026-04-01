@@ -23,7 +23,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Create necessary directories that are ignored by .gitignore but needed at runtime
-RUN mkdir -p logs temp_pdfs storage
+RUN mkdir -p logs storage
 
 # Create a placeholder database.json if it doesn't exist
 RUN echo "[]" > storage/database.json

@@ -5,7 +5,7 @@ from loguru import logger
 # Project modules
 from config.config import settings
 from storage.database import JSONDatabase
-from scraper.psx_scraper import JangNewsScraper
+from scraper.jang_scraper import JangNewsScraper
 from whatsapp.sender import WhatsAppSender
 
 # Configure logging
