@@ -7,9 +7,13 @@ import os
 JANG_LATEST_URL = "https://jang.com.pk/category/latest-news"
 
 # 🔹 WhatsApp API Settings (UltraMsg)
-INSTANCE_ID = os.getenv("WHATSAPP_INSTANCE_ID", "instance168787")
-TOKEN = os.getenv("WHATSAPP_TOKEN", "fposw4le00f7yreu")
-PHONE = os.getenv("WHATSAPP_PHONE", "923322894427")
+INSTANCE_ID = os.getenv("WHATSAPP_INSTANCE_ID")
+TOKEN = os.getenv("WHATSAPP_TOKEN")
+PHONE = os.getenv("WHATSAPP_PHONE")
+
+if not all([INSTANCE_ID, TOKEN, PHONE]):
+    print("❌ Error: Missing WhatsApp API credentials in environment variables.")
+    exit(1)
 
 # --- News Fetching Logic ---
 
