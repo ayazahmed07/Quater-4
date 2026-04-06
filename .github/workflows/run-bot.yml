@@ -31,4 +31,4 @@ jobs:
 
       # Step 4: Run your bot script
       - name: Run bot
-        run: python your_bot_script.py
+        run: python bot.py
